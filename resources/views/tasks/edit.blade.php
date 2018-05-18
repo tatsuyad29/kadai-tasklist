@@ -8,6 +8,9 @@
 
         {!! Form::label('content', 'タスク:') !!}
         {!! Form::text('content') !!}
+        
+        {!! Form::label('status', 'ステータス:') !!}
+        {{ Form::select('status', ['未着手', '実行中', '完了']) }}
 
         {!! Form::submit('更新') !!}
 
