@@ -11,27 +11,33 @@ class TasksController extends Controller
     public function index()
     {
         $tasks = Task::all();
+        $status = ["未着手", "実行中", "完了"];
         
         return view('tasks.index', [
-                'tasks' => $tasks
+                'tasks' => $tasks,
+                'status' => $status
             ]);
     }
     
     public function show($id)
     {
         $task = Task::find($id);
+        $status = ["未着手", "実行中", "完了"];
         
         return view('tasks.show', [
-                'task' => $task
+                'task' => $task,
+                'status' => $status
             ]);
     }
     
     public function create()
     {
         $task = new task;
+        $status = ["未着手", "実行中", "完了"];
         
         return view('tasks.create', [
-                'task' => $task
+                'task' => $task,
+                'status' => $status
             ]);
     }
         

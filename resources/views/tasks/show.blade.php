@@ -4,16 +4,22 @@
 
     <h1>id = {{ $task->id }} のタスク詳細ページ</h1>
     
-    <p>{{ $task->content }}</p>
-    @if ($task->status == 0)
-        <p>未着手</p>
-    @elseif ($task->status == 1)
-        <p>実行中</p>
-    @elseif ($task->status == 2)
-        <p>完了</p>
-    @else   
-        <p>エラー</p>
-    @endif
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>タスク</th>
+                <th>ステータス</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{!! link_to_route('tasks.show', $task->id, ['id' => $task->id]) !!}</td>
+                <td>{{ $task->content }}</td>
+                <td>{{ $status[$task->status] }}</td>
+            </tr>
+        </tbody>
+    </table>
     
     {!! link_to_route('tasks.edit', 'このタスクを編集', ['id' => $task->id]) !!}
     {!! Form::model($task, ['route' => ['tasks.destroy', $task->id], 'method' => 'delete']) !!}
