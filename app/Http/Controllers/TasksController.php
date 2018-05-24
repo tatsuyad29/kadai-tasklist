@@ -5,29 +5,53 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Task;
+use App\User;
 
 class TasksController extends Controller
 {
     public function index()
     {
-        $tasks = Task::all();
+        $data = [];
+        
+        if (\Auth::check()) {
+            $user = \Auth::user();
+            $tasks = $user->tasks()->orderBy('created_at', 'asc')->paginate(10);
+
+            $data = [
+                'user' => $user,
+                'tasks' => $tasks,
+            ];
+            // $data += counts($user);
+
+            return view('tasks.index', [
+                'data' => $data
+            ]);
+        } else {
+            return view('welcome');
+        }
+        /*$tasks = Task::all();
         $status = ["未着手", "実行中", "完了"];
         
         return view('tasks.index', [
                 'tasks' => $tasks,
                 'status' => $status
-            ]);
+            ]);*/
     }
     
     public function show($id)
     {
-        $task = Task::find($id);
-        $status = ["未着手", "実行中", "完了"];
+        if (\Auth::check()) {
+            $task = Task::find($id);
+            $status = ["未着手", "実行中", "完了"];
         
-        return view('tasks.show', [
+            return view('tasks.show', [
                 'task' => $task,
                 'status' => $status
             ]);
+        } else {
+            return redirect('/');
+        }
+        
     }
     
     public function create()
@@ -45,12 +69,13 @@ class TasksController extends Controller
     {
         $this->validate($request, [
                 'content' => 'required|max:191',
-                'status' => 'required|max:10',
+                'status' => 'required|max:10'
             ]);
             
         $task = new task;
         $task->content = $request->content;
         $task->status = $request->status;
+        $task->user_id = \Auth::user()->id;
         $task->save();
 
         return redirect('/');
@@ -58,11 +83,16 @@ class TasksController extends Controller
     
     public function edit($id)
     {
-        $task = task::find($id);
+        if (\Auth::check()) {
+            $task = task::find($id);
 
-        return view('tasks.edit', [
-            'task' => $task,
-        ]);
+            return view('tasks.edit', [
+                'task' => $task,
+        ]);    
+        } else {
+            return redirect('/');
+        }
+        
     }
     
     public function update(Request $request, $id)
