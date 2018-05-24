@@ -12,17 +12,17 @@ class TasksController extends Controller
     public function index()
     {
         $data = [];
-        
         if (\Auth::check()) {
             $user = \Auth::user();
             $tasks = $user->tasks()->orderBy('created_at', 'asc')->paginate(10);
+            $status = ["未着手", "実行中", "完了"];
 
             $data = [
                 'user' => $user,
                 'tasks' => $tasks,
+                'status' => $status
             ];
             // $data += counts($user);
-
             return view('tasks.index', [
                 'data' => $data
             ]);
